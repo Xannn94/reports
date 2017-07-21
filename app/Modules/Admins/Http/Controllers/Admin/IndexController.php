@@ -127,7 +127,7 @@ class IndexController extends Admin
         $json = json_encode([
             'Login' => $name,
         ]);
-        $ch = curl_init('http://time-backend/get-id');
+        $ch = curl_init('http://report.web2.weltkind.ru/get-id');
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);

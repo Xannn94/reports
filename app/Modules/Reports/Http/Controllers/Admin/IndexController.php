@@ -101,7 +101,7 @@ class IndexController extends Admin
         $json = json_encode([
             'Login' => $name,
         ]);
-        $ch = curl_init('http://time-backend/app_dev.php/refresh');
+        $ch = curl_init('http://report.web2.weltkind.ru/refresh');
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
@@ -451,7 +451,7 @@ class IndexController extends Admin
         $json = json_encode([
                 'Login' => 'Alex_khan',
         ]);
-        $ch = curl_init('http://time-backend/app_dev.php/refresh');
+        $ch = curl_init('http://report.web2.weltkind.ru/refresh');
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
