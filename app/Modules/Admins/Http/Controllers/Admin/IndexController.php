@@ -22,7 +22,7 @@ class IndexController extends Admin
 
     public function getRules($request, $id = false){
         $rules = [
-            'premium'     => 'required|max:10',
+            'premium'   => 'required|max:10',
             'name'      => 'required|max:255',
             'email'     => 'required|email|max:255|unique:admins'.($id?',id,'.$id:''),
             'password'  => 'required|min:6'
@@ -79,11 +79,79 @@ class IndexController extends Admin
 
         $entity = $this->getModel()->findOrFail($id);
 
-        $entity->update($request->all());
+        $params = $request->all();
+
+        if ($entity->name !== $params['name']){
+            $id = $this->getRedmineId($params['name']);
+
+            if ($id){
+                $params['redmine_id'] = $id;
+            }
+            else{
+                return redirect()->back()->withInput()->with('message','Такого пользователя не существует в redmine');
+            }
+        }
+
+        $entity->update($params);
 
         $this->after($entity);
 
         return redirect()->back()->with('message', trans($this->messages['update']));
 
+    }
+
+    public function store(Request $request){
+
+        $this->validate($request, $this->getRules($request));
+
+        $params = $request->all();
+
+        $id = $this->getRedmineId($params['name']);
+
+        if ($id){
+            $params['redmine_id'] = $id;
+        }
+        else{
+            return redirect()->back()->withInput()->with('message','Такого пользователя не существует в redmine');
+        }
+
+
+        $entity = $this->getModel()->create($params);
+
+        $this->after($entity);
+
+        return redirect()->route($this->routePrefix.'edit', ['id'=>$entity->id])->with('message', trans($this->messages['store']));
+    }
+
+    private function getRedmineId($name){
+        $json = json_encode([
+            'Login' => $name,
+        ]);
+        $ch = curl_init('http://time-backend/get-id');
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json;charset=\"utf-8\"',
+            'Content-Length: ' . strlen($json)
+        ]);
+
+        if (!$result = curl_exec($ch)) {
+            trigger_error(curl_error($ch));
+        }
+
+        curl_close($ch);
+
+        $result = json_decode($result);
+
+        if($result->status == 'success'){
+            return $result->id;
+        }
+        else {
+            return 0;
+        }
     }
 }

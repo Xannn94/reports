@@ -15,13 +15,17 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('uset_id');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('ticket_id');
             $table->string('project');
+            $table->string('project_slug');
             $table->string('ticket');
             $table->string('status');
             $table->float('optimism');
             $table->float('pessimism');
             $table->float('total');
+            $table->text('comment');
+            $table->timestamp('updated');
         });
     }
 

@@ -34,7 +34,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id','premium'
+        'name', 'email', 'password', 'role_id', 'redmine_id', 'premium'
     ];
 
     /**
@@ -52,7 +52,6 @@ class Admin extends Authenticatable
         if ($password){
             $this->attributes['password'] = bcrypt($password);
         }
-
     }
 
     public function scopeAdmin($query)

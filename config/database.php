@@ -69,7 +69,7 @@ return [
         'redmine' => [
             'driver' => 'mysql',
             'host' => '109.201.180.215',
-            'port' => env('DB_PORT', '3306'),
+            'port' => '3306',
             'database' => 'redmine',
             'username' => 'anton',
             'password' => '11anton22',
